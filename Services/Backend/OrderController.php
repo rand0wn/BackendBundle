@@ -17,114 +17,114 @@ use WH\LibBundle\Utils\Inflector;
 class OrderController extends BaseController implements BaseControllerInterface
 {
 
-	protected $container;
+    protected $container;
 
-	/**
-	 * SearchController constructor.
-	 *
-	 * @param ContainerInterface $container
-	 */
-	public function __construct(ContainerInterface $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * SearchController constructor.
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 
-	/**
-	 * @param         $entityPathConfig
-	 * @param Request $request
-	 * @param array   $arguments
-	 *
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function order($entityPathConfig, Request $request, $arguments = array())
-	{
-		$renderVars['entityPathConfig'] = $entityPathConfig;
+    /**
+     * @param         $entityPathConfig
+     * @param Request $request
+     * @param array   $arguments
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function order($entityPathConfig, Request $request, $arguments = [])
+    {
+        $renderVars['entityPathConfig'] = $entityPathConfig;
 
-		$config = $this->getConfig($entityPathConfig, 'order');
+        $config = $this->getConfig($entityPathConfig, 'order');
 
-		$urlData = $arguments;
+        $urlData = $arguments;
 
-		$doctrine = $this->get('doctrine');
+        $doctrine = $this->get('doctrine');
 
-		$entityRepository = $doctrine->getRepository($this->getRepositoryName($entityPathConfig));
+        $entityRepository = $doctrine->getRepository($this->getRepositoryName($entityPathConfig));
 
-		if ($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST') {
 
-			$em = $doctrine->getManager();
+            $em = $doctrine->getManager();
 
-			$data = $request->request->all();
+            $data = $request->request->all();
 
-			$entities = $entityRepository->get(
-				'all',
-				array(
-					'conditions' => array(
-						Inflector::camelize($entityPathConfig['entity']) . '.id' => $data['ids'],
-					),
-				)
-			);
-			$orderedEntities = array();
+            $entities = $entityRepository->get(
+                'all',
+                [
+                    'conditions' => [
+                        Inflector::camelize($entityPathConfig['entity']) . '.id' => $data['ids'],
+                    ],
+                ]
+            );
+            $orderedEntities = [];
 
-			switch ($config['sortableType']) {
+            switch ($config['sortableType']) {
 
-				case 'tree':
-					$existingLftRgt = array();
-					foreach ($entities as $entity) {
-						$existingLftRgt[] = array(
-							'lft' => $entity->getLft(),
-							'rgt' => $entity->getRgt(),
-						);
-						$orderedEntities[$entity->getId()] = $entity;
-					}
+                case 'tree':
+                    $existingLftRgt = [];
+                    foreach ($entities as $entity) {
+                        $existingLftRgt[] = [
+                            'lft' => $entity->getLft(),
+                            'rgt' => $entity->getRgt(),
+                        ];
+                        $orderedEntities[$entity->getId()] = $entity;
+                    }
 
-					foreach ($data['ids'] as $key => $id) {
-						$orderedEntity = $orderedEntities[$id];
+                    foreach ($data['ids'] as $key => $id) {
+                        $orderedEntity = $orderedEntities[$id];
 
-						$orderedEntity->setLft($existingLftRgt[$key]['lft']);
-						$orderedEntity->setRgt($existingLftRgt[$key]['rgt']);
+                        $orderedEntity->setLft($existingLftRgt[$key]['lft']);
+                        $orderedEntity->setRgt($existingLftRgt[$key]['rgt']);
 
-						$em->persist($orderedEntity);
-						$em->flush();
-					}
+                        $em->persist($orderedEntity);
+                        $em->flush();
+                    }
 
-					$entityRepository->recover();
-					$em->flush();
+                    $entityRepository->recover();
+                    $em->flush();
 
-					break;
+                    break;
 
-				case 'field':
-					foreach ($entities as $entity) {
-						$orderedEntities[$entity->getId()] = $entity;
-					}
+                case 'field':
+                    foreach ($entities as $entity) {
+                        $orderedEntities[$entity->getId()] = $entity;
+                    }
 
-					foreach ($data['ids'] as $key => $id) {
-						$orderedEntity = $orderedEntities[$id];
+                    foreach ($data['ids'] as $key => $id) {
+                        $orderedEntity = $orderedEntities[$id];
 
-						$orderedEntity->{'set' . ucfirst($config['sortableField'])}(sizeof($data['ids']) - $key);
+                        $orderedEntity->{'set' . ucfirst($config['sortableField'])}(sizeof($data['ids']) - $key);
 
-						$em->persist($orderedEntity);
-						$em->flush();
-					}
+                        $em->persist($orderedEntity);
+                        $em->flush();
+                    }
 
-					break;
-			}
+                    break;
+            }
 
-			return new JsonResponse(
-				array(
-					'success' => true,
-					'reload'  => true,
-				)
-			);
-		}
+            return new JsonResponse(
+                [
+                    'success' => true,
+                    'reload'  => true,
+                ]
+            );
+        }
 
-		return new JsonResponse(
-			array(
-				'success'  => true,
-				'redirect' => $this->getActionUrl(
-					$entityPathConfig,
-					'index',
-					$urlData
-				),
-			)
-		);
-	}
+        return new JsonResponse(
+            [
+                'success'  => true,
+                'redirect' => $this->getActionUrl(
+                    $entityPathConfig,
+                    'index',
+                    $urlData
+                ),
+            ]
+        );
+    }
 }

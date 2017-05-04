@@ -39,11 +39,11 @@ class DeleteController extends BaseController implements BaseControllerInterface
 
         $data = $em->getRepository($this->getRepositoryName($entityPathConfig))->get(
             'one',
-            array(
-                'conditions' => array(
+            [
+                'conditions' => [
                     Inflector::camelize($entityPathConfig['entity']) . '.id' => $id,
-                ),
-            )
+                ],
+            ]
         );
 
         $em->remove($data);

@@ -45,9 +45,9 @@ class ImportController extends BaseController implements BaseControllerInterface
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function import($entityPathConfig, Request $request, $arguments = array())
+    public function import($entityPathConfig, Request $request, $arguments = [])
     {
-        $this->renderVars = array();
+        $this->renderVars = [];
 
         $this->entityPathConfig = $entityPathConfig;
         $this->request = $request;
@@ -89,20 +89,20 @@ class ImportController extends BaseController implements BaseControllerInterface
      */
     public function handleImportForm()
     {
-        $importFormFields = array(
-            'csv' => array(
+        $importFormFields = [
+            'csv' => [
                 'type'  => 'file',
                 'label' => 'CSV File',
-            ),
-        );
+            ],
+        ];
 
-        $importFooterListButtons = array(
-            'submit' => array(
+        $importFooterListButtons = [
+            'submit' => [
                 'type'       => 'submit',
                 'label'      => 'Importer',
                 'buttonType' => 'button',
-            ),
-        );
+            ],
+        ];
 
         $importForm = $this->getForm($importFormFields, 'importForm');
 
@@ -127,12 +127,12 @@ class ImportController extends BaseController implements BaseControllerInterface
             }
         }
 
-        $this->renderVars['importFormPanelProperties'] = array(
+        $this->renderVars['importFormPanelProperties'] = [
             'form'              => $importForm->createView(),
             'formFields'        => $importFormFields,
             'footerListButtons' => $importFooterListButtons,
             'headerLabel'       => 'Import CSV',
-        );
+        ];
 
         return true;
     }
@@ -142,19 +142,19 @@ class ImportController extends BaseController implements BaseControllerInterface
      */
     public function handleConfirmationForm()
     {
-        $confirmationFormFields = array(
-            'submit' => array(
+        $confirmationFormFields = [
+            'submit' => [
                 'type'  => 'submit',
                 'label' => 'Confirm import',
-            ),
-        );
+            ],
+        ];
 
-        $confirmationFormFooterListButtons = array(
-            'submit' => array(
+        $confirmationFormFooterListButtons = [
+            'submit' => [
                 'label'      => 'Confirm import',
                 'buttonType' => 'button',
-            ),
-        );
+            ],
+        ];
 
         $confirmationForm = $this->getForm($confirmationFormFields, 'confirmationForm');
 
@@ -166,12 +166,12 @@ class ImportController extends BaseController implements BaseControllerInterface
         );
         $this->renderVars['importResponse'] = $importResponse;
 
-        $this->renderVars['confirmationFormPanelProperties'] = array(
+        $this->renderVars['confirmationFormPanelProperties'] = [
             'form'              => $confirmationForm->createView(),
             'formFields'        => $confirmationFormFields,
             'footerListButtons' => $confirmationFormFooterListButtons,
             'headerLabel'       => 'Confirm import',
-        );
+        ];
 
         return true;
     }
@@ -194,7 +194,7 @@ class ImportController extends BaseController implements BaseControllerInterface
      */
     public function getImportResponse($entityPathConfig, $filePath)
     {
-        $importResponse = array();
+        $importResponse = [];
 
         if ($filePath) {
             $config = $this->getConfig($entityPathConfig, 'import');
@@ -204,9 +204,9 @@ class ImportController extends BaseController implements BaseControllerInterface
             $importResponse = $this->get('lib.csv_importer')->getCsvData(
                 $filePath,
                 $fileExpectedColumns,
-                array(
+                [
                     'uniqueColumns' => $config['uniqueColumns'],
-                )
+                ]
             );
             $importResponse['columns'] = $fileExpectedColumns;
         }

@@ -52,7 +52,7 @@ class IndexController extends BaseController implements BaseControllerInterface
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index($entityPathConfig, Request $request, $arguments = array())
+    public function index($entityPathConfig, Request $request, $arguments = [])
     {
         $this->entityPathConfig = $entityPathConfig;
         $this->request = $request;
@@ -64,7 +64,7 @@ class IndexController extends BaseController implements BaseControllerInterface
 
         $this->renderVars['globalConfig'] = $this->globalConfig;
 
-        $this->conditions = array();
+        $this->conditions = [];
 
         foreach ($arguments as $condition => $value) {
             $this->conditions[$condition] = $value;
@@ -86,11 +86,11 @@ class IndexController extends BaseController implements BaseControllerInterface
                         $em = $this->get('doctrine')->getManager();
                         $entity = $em->getRepository($this->config['treeRootLabel']['class'])->get(
                             'one',
-                            array(
-                                'conditions' => array(
+                            [
+                                'conditions' => [
                                     $this->config['treeRootLabel']['dataField'] => $arguments[$this->config['treeRootLabel']['dataField']],
-                                ),
-                            )
+                                ],
+                            ]
                         );
 
                         if ($entity) {
@@ -284,11 +284,11 @@ class IndexController extends BaseController implements BaseControllerInterface
                         $className = lcfirst(preg_replace('#.*:(.*)#', '$1', $formFieldProperties['class']));
                         $data[$formFieldSlug] = $em->getRepository($formFieldProperties['class'])->get(
                             'one',
-                            array(
-                                'conditions' => array(
+                            [
+                                'conditions' => [
                                     $className . '.id' => $data[$formFieldSlug],
-                                ),
-                            )
+                                ],
+                            ]
                         );
                         break;
                 }
@@ -328,7 +328,7 @@ class IndexController extends BaseController implements BaseControllerInterface
 
             $formFields = $this->config['formPanelProperties']['formFields'];
 
-            $formData = array();
+            $formData = [];
 
             foreach ($formFields as $formFieldSlug => $formFieldProperties) {
                 if (isset($data[$formFieldSlug])) {
@@ -404,9 +404,9 @@ class IndexController extends BaseController implements BaseControllerInterface
 
         $entities = $entityRepository->get(
             'all',
-            array(
+            [
                 'conditions' => $this->conditions,
-            )
+            ]
         );
         $this->renderVars['tablePanelProperties']['entities'] = $entities;
 
@@ -438,23 +438,23 @@ class IndexController extends BaseController implements BaseControllerInterface
 
         $paginator = $entityRepository->get(
             'paginate',
-            array(
-                'paginate'   => array(
+            [
+                'paginate'   => [
                     'page'  => $paginationPage,
                     'limit' => $paginationLimit,
-                ),
+                ],
                 'conditions' => $this->conditions,
-            )
+            ]
         );
         $entities = $paginator['entities'];
         $this->renderVars['tablePanelProperties']['entities'] = $entities;
 
-        $pagination = array(
+        $pagination = [
             'page'  => $paginationPage,
             'limit' => $paginationLimit,
             'count' => $paginator['count'],
             'url'   => $this->getActionUrl($this->entityPathConfig, 'index', $this->arguments),
-        );
+        ];
 
         $this->renderVars['pagination'] = $pagination;
 
@@ -470,7 +470,7 @@ class IndexController extends BaseController implements BaseControllerInterface
      */
     public function getConditionsFromData($entity, $formFields, $data)
     {
-        $conditions = array();
+        $conditions = [];
 
         foreach ($formFields as $formField => $properties) {
 
@@ -542,7 +542,7 @@ class IndexController extends BaseController implements BaseControllerInterface
 
         $renderVars['title'] = $backendTranslator->trans($renderVars['title']);
 
-        $breadcrumb = array();
+        $breadcrumb = [];
         foreach ($renderVars['breadcrumb'] as $name => $url) {
             $breadcrumb[$backendTranslator->trans($name)] = $url;
         }

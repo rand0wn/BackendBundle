@@ -62,11 +62,11 @@ class UpdateController extends BaseController implements BaseControllerInterface
 
         $data = $em->getRepository($this->getRepositoryName($entityPathConfig))->get(
             'one',
-            array(
-                'conditions' => array(
+            [
+                'conditions' => [
                     Inflector::camelize($entityPathConfig['entity']) . '.id' => $id,
-                ),
-            )
+                ],
+            ]
         );
 
         if (!$data) {
@@ -195,7 +195,7 @@ class UpdateController extends BaseController implements BaseControllerInterface
         }
 
         if (!$this->modal) {
-            $breadcrumb = array();
+            $breadcrumb = [];
             foreach ($renderVars['breadcrumb'] as $name => $url) {
                 $breadcrumb[$backendTranslator->trans($name)] = $url;
             }
@@ -227,7 +227,7 @@ class UpdateController extends BaseController implements BaseControllerInterface
                                 $listButton['label'] = $backendTranslator->trans(
                                     $listButton['label']
                                 );
-                                
+
                                 $formZone['listButtons'][$button] = $listButton;
                             }
                         }
@@ -273,9 +273,9 @@ class UpdateController extends BaseController implements BaseControllerInterface
                 $this->form->add(
                     $footerFormField['field'],
                     SubmitType::class,
-                    array(
+                    [
                         'label' => $footerFormField['label'],
-                    )
+                    ]
                 );
             }
         }
@@ -305,10 +305,10 @@ class UpdateController extends BaseController implements BaseControllerInterface
 
             if ($this->request->isXmlHttpRequest()) {
                 return new JsonResponse(
-                    array(
+                    [
                         'success'  => true,
                         'redirect' => $redirectUrl,
-                    )
+                    ]
                 );
             }
 

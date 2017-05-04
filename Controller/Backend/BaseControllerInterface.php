@@ -10,10 +10,10 @@ namespace WH\BackendBundle\Controller\Backend;
 interface BaseControllerInterface
 {
 
-	/**
-	 * @param $config
-	 *
-	 * @return bool
-	 */
-	public function validConfig($config);
+    /**
+     * @param $config
+     *
+     * @return bool
+     */
+    public function validConfig($config);
 }

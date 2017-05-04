@@ -12,39 +12,39 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Translator
 {
 
-	private $container;
-	private $domain = 'WHBackendBundle';
+    private $container;
+    private $domain = 'WHBackendBundle';
 
-	/**
-	 * SearchController constructor.
-	 *
-	 * @param ContainerInterface $container
-	 */
-	public function __construct(ContainerInterface $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * SearchController constructor.
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 
-	/**
-	 * @param $domain
-	 */
-	public function setDomain($domain)
-	{
-		$this->domain = $domain;
-	}
+    /**
+     * @param $domain
+     */
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
+    }
 
-	/**
-	 * @param       $stringToTranslate
-	 * @param array $parameters
-	 *
-	 * @return string
-	 */
-	public function trans($stringToTranslate, $parameters = array())
-	{
-		return $this->container->get('translator')->trans(
-			$stringToTranslate,
-			$parameters,
-			$this->domain
-		);
-	}
+    /**
+     * @param       $stringToTranslate
+     * @param array $parameters
+     *
+     * @return string
+     */
+    public function trans($stringToTranslate, $parameters = [])
+    {
+        return $this->container->get('translator')->trans(
+            $stringToTranslate,
+            $parameters,
+            $this->domain
+        );
+    }
 }

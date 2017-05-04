@@ -49,13 +49,13 @@ class CreateController extends BaseController implements BaseControllerInterface
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function create($entityPathConfig, Request $request, $arguments = array())
+    public function create($entityPathConfig, Request $request, $arguments = [])
     {
         $this->entityPathConfig = $entityPathConfig;
         $this->request = $request;
         $this->arguments = $arguments;
 
-        $this->renderVars = array();
+        $this->renderVars = [];
 
         $this->config = $this->getConfig($entityPathConfig, 'create');
         $this->globalConfig = $this->getGlobalConfig($entityPathConfig);
@@ -121,9 +121,9 @@ class CreateController extends BaseController implements BaseControllerInterface
             $form->add(
                 'create',
                 SubmitType::class,
-                array(
+                [
                     'label' => 'Create',
-                )
+                ]
             );
         }
 
@@ -131,9 +131,9 @@ class CreateController extends BaseController implements BaseControllerInterface
             $form->add(
                 'createEdit',
                 SubmitType::class,
-                array(
+                [
                     'label' => 'Create & Edit',
-                )
+                ]
             );
         }
 
@@ -168,11 +168,11 @@ class CreateController extends BaseController implements BaseControllerInterface
 
             $argumentValue = $this->container->get('doctrine')->getRepository($argumentEntityRepositoryName)->get(
                 'one',
-                array(
-                    'conditions' => array(
+                [
+                    'conditions' => [
                         $argument[0] . '.' . $argument[1] => $value,
-                    ),
-                )
+                    ],
+                ]
             );
             $data->{'set' . ucfirst($argument[0])}($argumentValue);
         }
@@ -226,10 +226,10 @@ class CreateController extends BaseController implements BaseControllerInterface
         if ($this->request->isXmlHttpRequest()) {
 
             return new JsonResponse(
-                array(
+                [
                     'success'  => true,
                     'redirect' => $redirectUrl,
-                )
+                ]
             );
         }
 

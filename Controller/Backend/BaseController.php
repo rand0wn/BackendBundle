@@ -43,12 +43,12 @@ class BaseController extends Controller implements BaseControllerInterface
      */
     public function getEntityPathConfig()
     {
-        return array(
+        return [
             'bundlePrefix' => $this->bundlePrefix,
             'bundle'       => $this->bundle,
             'entity'       => $this->entity,
             'type'         => $this->type,
-        );
+        ];
     }
 
     /**
@@ -84,7 +84,7 @@ class BaseController extends Controller implements BaseControllerInterface
             return $config;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -246,7 +246,7 @@ class BaseController extends Controller implements BaseControllerInterface
      */
     public function getBreadcrumb($configBreadcrumbs, $entityPathConfig, $data = null)
     {
-        $breadcrumb = array();
+        $breadcrumb = [];
 
         foreach ($configBreadcrumbs as $configBreadcrumb) {
             $url = $this->getActionUrl($entityPathConfig, $configBreadcrumb['action'], $data);
@@ -280,7 +280,7 @@ class BaseController extends Controller implements BaseControllerInterface
         $route = $action['route'];
 
         if (!isset($action['parameters'])) {
-            return $this->generateUrl($route, array(), $absolutePath);
+            return $this->generateUrl($route, [], $absolutePath);
         }
 
         if (!$data && isset($globalConfig['defaultData'])) {
@@ -293,7 +293,7 @@ class BaseController extends Controller implements BaseControllerInterface
             );
         }
 
-        $parameters = array();
+        $parameters = [];
 
         foreach ($action['parameters'] as $routerParameterName => $parameter) {
             if (is_object($data)) {
@@ -327,7 +327,7 @@ class BaseController extends Controller implements BaseControllerInterface
      *
      * @return mixed|\Symfony\Component\Form\FormInterface
      */
-    public function getEntityForm($formFields, $entityPathConfig, $data, $formName = 'form', $formOptions = array())
+    public function getEntityForm($formFields, $entityPathConfig, $data, $formName = 'form', $formOptions = [])
     {
         $dataClass = $entityPathConfig['bundle'] . '\Entity\\' . $entityPathConfig['entity'];
         if ($entityPathConfig['bundlePrefix'] != '') {
@@ -339,9 +339,9 @@ class BaseController extends Controller implements BaseControllerInterface
             'Symfony\Component\Form\Extension\Core\Type\FormType',
             $data,
             array_merge(
-                array(
+                [
                     'data_class' => $dataClass,
-                ),
+                ],
                 $formOptions
             )
         );
@@ -376,7 +376,7 @@ class BaseController extends Controller implements BaseControllerInterface
     {
         $globalConfig = $this->getGlobalConfig($entityPathConfig);
 
-        $formFields = array();
+        $formFields = [];
 
         if (is_array($configFormFields)) {
             foreach ($configFormFields as $key => $configFormField) {
@@ -420,19 +420,19 @@ class BaseController extends Controller implements BaseControllerInterface
      *
      * @return mixed
      */
-    public function addFormFieldsToForm($form, $formFields, $entityPathConfig = array())
+    public function addFormFieldsToForm($form, $formFields, $entityPathConfig = [])
     {
         foreach ($formFields as $formField => $properties) {
-            $options = array(
+            $options = [
                 'label'    => (!empty($properties['label'])) ? $properties['label'] : false,
                 'required' => false,
-            );
+            ];
 
-            $optionsToGive = array(
+            $optionsToGive = [
                 'attr',
                 'choice_label',
                 'class',
-            );
+            ];
             foreach ($optionsToGive as $optionToGive) {
                 if (!empty($properties[$optionToGive])) {
                     $options[$optionToGive] = $properties[$optionToGive];
@@ -471,14 +471,14 @@ class BaseController extends Controller implements BaseControllerInterface
                                     case 'security.role_hierarchy.roles':
                                         $arrayRoles = $this->getUser()->getRoles();
 
-                                        $roles = array();
+                                        $roles = [];
                                         foreach ($arrayRoles as $arrayRole) {
                                             $roles[] = new Role($arrayRole);
                                         }
 
                                         $roles = $this->get('security.role_hierarchy')->getReachableRoles($roles);
 
-                                        $choices = array();
+                                        $choices = [];
                                         foreach ($roles as $role) {
                                             $choices[$role->getRole()] = $role->getRole();
                                         }
@@ -544,7 +544,7 @@ class BaseController extends Controller implements BaseControllerInterface
                         $em = $this->container->get('doctrine')->getManager();
                         $entityRepository = $em->getRepository($properties['class']);
 
-                        $conditions = array();
+                        $conditions = [];
 
                         if (isset($properties['custom_query_builder']['conditions'])) {
                             foreach ($properties['custom_query_builder']['conditions'] as $condition => $conditionValue) {
@@ -559,9 +559,9 @@ class BaseController extends Controller implements BaseControllerInterface
 
                         $query = $entityRepository->get(
                             'query',
-                            array(
+                            [
                                 'conditions' => $conditions,
-                            )
+                            ]
                         );
 
                         $options['query_builder'] = $query;
@@ -662,9 +662,9 @@ class BaseController extends Controller implements BaseControllerInterface
                     $properties['entityPathConfig'],
                     $this->getVariableValue($formField, $form->getData()),
                     $formField,
-                    array(
+                    [
                         'auto_initialize' => false,
-                    )
+                    ]
                 );
 
                 $form->add($subForm);
@@ -687,7 +687,7 @@ class BaseController extends Controller implements BaseControllerInterface
      */
     public function getDataFromArguments($arguments)
     {
-        $data = array();
+        $data = [];
         if (empty($arguments)) {
             return $data;
         }
